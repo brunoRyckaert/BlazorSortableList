@@ -1,18 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageReadmeFile>README.MD</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/AlexNek/BlazorSortableList</RepositoryUrl>
-    <PackageOutputPath>.\bin\nuget</PackageOutputPath>
+    <RepositoryUrl>https://github.com/brunoryckaert/BlazorSortableList</RepositoryUrl>
+    <PackageOutputPath>/Users/Bruno/Documents/dev/packages</PackageOutputPath>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageIcon>sortable-list.png</PackageIcon>
-    <PackageProjectUrl>https://github.com/AlexNek/BlazorSortableList</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/brunoryckaert/BlazorSortableList</PackageProjectUrl>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Copyright>Burke Holland, Alex Nek</Copyright>
     <Description>An implementation of the SortableJS library for Blazor</Description>
     <StaticWebAssetsEnabled>true</StaticWebAssetsEnabled>
+    <PackageId>BlazorSortableList-fork-attribute_splatting</PackageId>
+    <Version>2.2.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\LICENSE">
@@ -28,12 +29,14 @@
     <SupportedPlatform Include="browser" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    <PackageReference Include="Microsoft.AspNetCore.Components">
+      <Version Condition="'$(TargetFramework)' == 'net8.0'">8.0.11</Version>
+      <Version Condition="'$(TargetFramework)' == 'net9.0'">9.0.0</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web">
+      <Version Condition="'$(TargetFramework)' == 'net8.0'">8.0.11</Version>
+      <Version Condition="'$(TargetFramework)' == 'net9.0'">9.0.0</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Content Update="SortableList.razor">
