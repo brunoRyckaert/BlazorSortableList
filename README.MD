@@ -57,7 +57,7 @@ dotnet add package BlazorSortableList
 3. Add the `SortableList.razor.js` to your `index.html`/`app.razor` file..
 
  ```
-<script type="module" src="_content/BlazorSortableList/SortableList.razor.js"></script>
+<script type="module" src="_content/BlazorSortableList-fork-attribute_splatting/SortableList.razor.js"></script>
  ```
 
 4a. [From version 1.2](https://github.com/AlexNek/BlazorSortableList#version-12), you can move all the logic out of the component and use the standard implementation of the logic (`SingleSortableListGroup`, ~~V1.2:`TwoSortableListGroup`~~, V2.0:`MultiSortableListGroup`).
