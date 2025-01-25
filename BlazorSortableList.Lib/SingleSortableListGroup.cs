@@ -24,7 +24,7 @@ public class SingleSortableListGroup<T> : SortableListGroup<T>, ISortableListIte
     {
         SortList(oldIndex, newIndex);
         //refresh control
-        return true;
+        return false;
     }
 
     private void SortList(int oldIndex, int newIndex)
