@@ -13,7 +13,9 @@
         {
             @if (SortableItemTemplate is not null)
             {
-                @SortableItemTemplate(item)
+                <div @key=Guid.NewGuid()>
+                    @SortableItemTemplate(item)
+                </div>
             }
         }
     }
