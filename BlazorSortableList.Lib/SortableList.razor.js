@@ -88,11 +88,11 @@ export function init(id, group, pull, put, sort, handle, filter, component, forc
                     //console.log(event.item);
                     //console.log("insert it before:", event.to, event.oldIndex, event.to.childNodes, event.to.childNodes[event.oldIndex]);
                 }
-                event.item.remove();
+                //event.item.remove();
 
                 // method inserts a child node before an existing child. insertBefore(newNode, referenceNode)
                 // referenceNode - The node before which newNode is inserted
-                event.to.insertBefore(event.item, event.to.childNodes[event.oldIndex]);
+                //event.to.insertBefore(event.item, event.to.childNodes[event.oldIndex]);
             }
             // Notify .NET to update its model and re-render
             component.invokeMethodAsync('OnUpdateJS', oldIndex, newIndex, event.from.id);

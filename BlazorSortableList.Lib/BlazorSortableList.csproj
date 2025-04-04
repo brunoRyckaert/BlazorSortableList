@@ -9,11 +9,11 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/brunoryckaert/BlazorSortableList</PackageProjectUrl>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Copyright>Burke Holland, Alex Nek</Copyright>
+    <Copyright>Burke Holland, Alex Nek, Bruno Ryckaert</Copyright>
     <Description>An implementation of the SortableJS library for Blazor</Description>
     <StaticWebAssetsEnabled>true</StaticWebAssetsEnabled>
     <PackageId>BlazorSortableList-fork-attribute_splatting</PackageId>
-    <Version>2.2.0</Version>
+    <Version>2.3.1</Version>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\LICENSE">

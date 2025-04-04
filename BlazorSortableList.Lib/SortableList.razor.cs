@@ -230,7 +230,8 @@ namespace BlazorSortableList
             var items = Items;
             if (items != null)
             {
-                var itemToMove = items[oldIndex];
+                Console.WriteLine(items);
+                /*var itemToMove = items[oldIndex];
                 items.RemoveAt(oldIndex);
 
                 if (newIndex < items.Count)
@@ -241,7 +242,8 @@ namespace BlazorSortableList
                 {
                     items.Add(itemToMove);
                 }
-
+                */
+                
                 StateHasChanged();
             }
         }
