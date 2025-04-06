@@ -121,7 +121,8 @@ namespace BlazorSortableList
             {
                 if (_sortableListHandler.HandleUpdate(fromId, oldIndex, newIndex))
                 {
-                    StateHasChanged();
+                    OnUpdate.InvokeAsync((oldIndex, newIndex));
+                    //StateHasChanged();
                 }
             }
             else
@@ -139,7 +140,8 @@ namespace BlazorSortableList
                 }
                 else if (DefaultSort)
                 {
-                    SortList(oldIndex, newIndex);
+                    OnUpdate.InvokeAsync((oldIndex, newIndex));
+                    //SortList(oldIndex, newIndex);
                 }
             }
         }
