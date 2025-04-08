@@ -11,9 +11,9 @@ namespace BlazorSortableList
 
         private ISortableListSelection? _sortableListSelection;
 
-        private DotNetObjectReference<SortableList<T>>? selfReference;
+        private DotNetObjectReference<SortableList<T>>? _selfReference;
 
-        private string _cssForSelection;
+        private string? _cssForSelection;
 
         private string? _multiDragKey = string.Empty;
 
@@ -71,106 +71,90 @@ namespace BlazorSortableList
         [Parameter]
         public RenderFragment<T>? SortableItemTemplate { get; set; }
 
-        public void Dispose() => selfReference?.Dispose();
+        public void Dispose() => _selfReference?.Dispose();
 
         [JSInvokable]
         public void OnDeselectJS(string fromId, int index)
         {
-            if (_sortableListSelection != null)
+            if (_sortableListSelection == null) 
+                return;
+            
+            if (_sortableListSelection.HandleDeselect(fromId, index))
             {
-                if (_sortableListSelection.HandleDeselect(fromId, index))
-                {
-                    StateHasChanged();
-                }
+                StateHasChanged();
             }
         }
 
         [JSInvokable]
         public void OnRemoveJS(int oldIndex, int newIndex, string fromId, string toId)
         {
-            if (_sortableListHandler != null)
-            {
-                if (_sortableListHandler.HandleRemove(fromId, toId, oldIndex, newIndex))
-                {
-                    StateHasChanged();
-                }
-            }
+            if (_sortableListHandler?.HandleRemove(fromId, toId, oldIndex, newIndex) ?? false)
+                StateHasChanged();
             else
-            {
-                // remove the item from the list
                 OnRemove.InvokeAsync((oldIndex, newIndex));
-            }
         }
 
         [JSInvokable]
         public void OnSelectJS(string fromId, int index)
         {
-            if (_sortableListSelection != null)
-            {
-                if (_sortableListSelection.HandleSelect(fromId, index))
-                {
-                    StateHasChanged();
-                }
-            }
+            if (_sortableListSelection?.HandleSelect(fromId, index) ?? false)
+                StateHasChanged();
         }
 
         [JSInvokable]
         public void OnUpdateJS(int oldIndex, int newIndex, string fromId)
         {
-            if (_sortableListHandler != null)
+            if (_sortableListHandler?.HandleUpdate(fromId, oldIndex, newIndex) ?? false)
             {
-                if (_sortableListHandler.HandleUpdate(fromId, oldIndex, newIndex))
-                {
-                    OnUpdate.InvokeAsync((oldIndex, newIndex));
-                    //StateHasChanged();
-                }
+                OnUpdate.InvokeAsync((oldIndex, newIndex));
+                return;
             }
-            else
-            {
-                if (OnUpdate.HasDelegate)
-                {
-                    if (DefaultSort)
-                    {
-                        throw new ArgumentException(
-                            "It must be defined as either {nameof(OnUpdate)} or {nameof(DefaultSort)}, but not both together.");
-                    }
 
-                    // invoke the OnUpdate event passing in the oldIndex and the newIndex
-                    OnUpdate.InvokeAsync((oldIndex, newIndex));
-                }
-                else if (DefaultSort)
+            if (OnUpdate.HasDelegate)
+            {
+                if (DefaultSort)
                 {
-                    OnUpdate.InvokeAsync((oldIndex, newIndex));
-                    //SortList(oldIndex, newIndex);
+                    throw new ArgumentException(
+                        "It must be defined as either {nameof(OnUpdate)} or {nameof(DefaultSort)}, but not both together.");
                 }
+
+                // invoke the OnUpdate event passing in the oldIndex and the newIndex
+                OnUpdate.InvokeAsync((oldIndex, newIndex));
+                return;
+            }
+            
+            if (DefaultSort)
+            {
+                OnUpdate.InvokeAsync((oldIndex, newIndex));
             }
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
-            {
-                selfReference = DotNetObjectReference.Create(this);
-                var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorSortableList-fork-attribute_splatting/SortableList.razor.js");
+            if (!firstRender)
+                return;
 
-                //await JS.InvokeVoidAsync("console.log", $"***id:{Id}, group:{Group},pull: {Pull},put:{Put},sort:{Sort}, handle:{Handle}, filter:{Filter}, forceFallback:{ForceFallback}");
-                await module.InvokeAsync<string>(
-                    "init",
-                    Id,
-                    Group,
-                    Pull,
-                    Put,
-                    Sort,
-                    Handle,
-                    Filter,
-                    selfReference,
-                    ForceFallback,
-                    _cssForSelection,
-                    _multiDragKey,
-                    _avoidImplicitDeselect,
-                    _fallbackOnBody,
-                    _swapThreshold);
-            }
+            _selfReference = DotNetObjectReference.Create(this);
+            var module = await JS.InvokeAsync<IJSObjectReference>("import",
+                "./_content/BlazorSortableList-fork-attribute_splatting/SortableList.razor.js");
+
+             await module.InvokeAsync<string>(
+                "init",
+                Id,
+                Group,
+                Pull,
+                Put,
+                Sort,
+                Handle,
+                Filter,
+                _selfReference,
+                ForceFallback,
+                _cssForSelection,
+                _multiDragKey,
+                _avoidImplicitDeselect,
+                _fallbackOnBody,
+                _swapThreshold
+            );
         }
 
         /// <summary>
@@ -184,70 +168,44 @@ namespace BlazorSortableList
             _sortableListHandler = GroupModel as ISortableListItemMover;
             _sortableListSelection = GroupModel as ISortableListSelection;
 
-            if (GroupModel != null)
+            var model = GroupModel?.GetModel(Id);
+            if (model == null)
+                return;
+            
+            Group = model.Group;
+            Items = model.Items;
+            var settings = model.Settings;
+
+            if (settings.CloneMode)
+                Pull = "clone";
+
+            Put = settings.AllowDrop;
+            Sort = settings.AllowReorder;
+            
+            if (string.IsNullOrEmpty(Handle))
+                Handle = settings.CssForDragHandle;
+
+            Filter = settings.CssForDisabledItem;
+            ForceFallback = !settings.AllowHtml5DragAndDrop;
+            if (settings.MultiSelection)
             {
-                ISortableListModel<T>? model = GroupModel.GetModel(Id);
-                if (model != null)
-                {
-                    Group = model.Group;
-                    Items = model.Items;
-                    var settings = model.Settings;
+                _cssForSelection = string.IsNullOrEmpty(settings.CssForSelection)
+                    ? "sortable-selected"
+                    : settings.CssForSelection;
+                _multiDragKey = settings.AddToSelectionKey;
+                _avoidImplicitDeselect = settings.AvoidImplicitDeselect;
 
-                    if (settings != null)
-                    {
-                        if (settings.CloneMode)
-                        {
-                            Pull = "clone";
-                        }
-
-                        Put = settings.AllowDrop;
-                        Sort = settings.AllowReorder;
-                        if (string.IsNullOrEmpty(Handle))
-                        {
-                            Handle = settings.CssForDragHandle;
-                        }
-
-                        Filter = settings.CssForDisabledItem;
-                        ForceFallback = !settings.AllowHtml5DragAndDrop;
-                        if (settings.MultiSelection)
-                        {
-                            _cssForSelection = string.IsNullOrEmpty(settings.CssForSelection) ? "sortable-selected" : settings.CssForSelection;
-                            _multiDragKey = settings.AddToSelectionKey;
-                            _avoidImplicitDeselect = settings.AvoidImplicitDeselect;
-
-                            _multiDragKey ??= String.Empty;
-                        }
-
-                        // actual for the nested lists
-                        _fallbackOnBody = settings.FallbackOnBody;
-                        _swapThreshold = settings.SwapThreshold;
-
-                    }
-                }
+                _multiDragKey ??= String.Empty;
             }
+
+            // actual for the nested lists
+            _fallbackOnBody = settings.FallbackOnBody;
+            _swapThreshold = settings.SwapThreshold;
         }
 
         private void SortList(int oldIndex, int newIndex)
         {
-            var items = Items;
-            if (items != null)
-            {
-                Console.WriteLine(items);
-                /*var itemToMove = items[oldIndex];
-                items.RemoveAt(oldIndex);
-
-                if (newIndex < items.Count)
-                {
-                    items.Insert(newIndex, itemToMove);
-                }
-                else
-                {
-                    items.Add(itemToMove);
-                }
-                */
-                
-                StateHasChanged();
-            }
+            StateHasChanged();
         }
     }
 }
