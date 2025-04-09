@@ -9,41 +9,39 @@ public class MultiSelectionListGroup<T> : MultiSortableListGroup<T>, ISortableLi
 
     public virtual bool HandleDeselect(string fromId, int index)
     {
-        bool ret = false;
         var items = GetModel(fromId)?.Items;
-        if (items != null && index >= 0 && index < items.Count)
-        {
-            T item = items[index];
-            if (item.Selected)
-            {
-                item.Selected = false;
-                ret = true;
-            }
-        }
-
-        return ret;
+        
+        if (items == null || index < 0 || index >= items.Count) 
+            return false;
+        
+        var item = items[index];
+        
+        if (!item.Selected) 
+            return false;
+        
+        item.Selected = false;
+        return true;
     }
 
+    // can't we just invert the previous method??
     public virtual bool HandleSelect(string fromId, int index)
     {
-        bool ret = false;
         var items = GetModel(fromId)?.Items;
-        if (items != null && index >= 0 && index < items.Count)
-        {
-            T item = items[index];
-            if (!item.Selected)
-            {
-                item.Selected = true;
-                ret = true;
-            }
-        }
-
-        return ret;
+        
+        if (items == null || index < 0 || index >= items.Count) 
+            return true;
+        
+        var item = items[index];
+        if (item.Selected) 
+            return false;
+        
+        item.Selected = true;
+        return true;
     }
 
     protected override void ListArrangeItems(int oldIndex, int newIndex, IList<T> items)
     {
-        List<T> selected = CutSelected(items);
+        var selected = CutSelected(items);
 
         if (selected.Any())
         {
@@ -73,7 +71,7 @@ public class MultiSelectionListGroup<T> : MultiSortableListGroup<T>, ISortableLi
 
     protected override void ListMoveItem(int oldIndex, int newIndex, IList<T> items1, IList<T> items2)
     {
-        List<T> selected = GetSelected(items1);
+        var selected = GetSelected(items1);
 
         if (selected.Any())
         {
@@ -108,7 +106,7 @@ public class MultiSelectionListGroup<T> : MultiSortableListGroup<T>, ISortableLi
     protected static List<T> CutSelected(IList<T> items)
     {
         var selected = new List<T>();
-        for (int i = 0; i < items.Count;)
+        for (var i = 0; i < items.Count;)
         {
             var item1 = items[i];
             if (item1.Selected)

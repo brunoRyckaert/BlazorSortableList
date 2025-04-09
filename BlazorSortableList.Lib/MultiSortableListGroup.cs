@@ -22,12 +22,13 @@ public class MultiSortableListGroup<T> : SortableListGroup<T>, ISortableListItem
     {
         var items1 = GetModel(fromId)?.Items;
         var items2 = GetModel(toId)?.Items;
-        if (items1 != null && items2 != null)
-        {
-            ListMoveItem(oldIndex, newIndex, items1, items2);
+        
+        if (items1 == null || items2 == null) 
+            return false;
+        
+        ListMoveItem(oldIndex, newIndex, items1, items2);
             
-            _refreshComponent();
-        }
+        _refreshComponent();
 
         return false;
     }

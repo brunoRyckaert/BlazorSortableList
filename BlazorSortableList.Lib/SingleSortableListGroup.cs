@@ -4,14 +4,11 @@ public class SingleSortableListGroup<T> : SortableListGroup<T>, ISortableListIte
 {
     private readonly IList<T> _items;
 
-    public ISortableListModel<T> Model { get; }
-
     public SingleSortableListGroup(string id, ISortableListModel<T> model)
 
     {
         AddModel(id, model);
-
-        Model = model;
+        
         _items = model.Items;
     }
 
@@ -24,22 +21,21 @@ public class SingleSortableListGroup<T> : SortableListGroup<T>, ISortableListIte
     {
         SortList(oldIndex, newIndex);
         //refresh control
-        return true;
+        return false;
     }
 
     private void SortList(int oldIndex, int newIndex)
     {
-        var items = _items;
-        var itemToMove = items[oldIndex];
-        items.RemoveAt(oldIndex);
+        var itemToMove = _items[oldIndex];
+        _items.RemoveAt(oldIndex);
 
-        if (newIndex < items.Count)
+        if (newIndex < _items.Count)
         {
-            items.Insert(newIndex, itemToMove);
+            _items.Insert(newIndex, itemToMove);
         }
         else
         {
-            items.Add(itemToMove);
+            _items.Add(itemToMove);
         }
     }
 }

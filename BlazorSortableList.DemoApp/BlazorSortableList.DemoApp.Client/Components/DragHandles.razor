@@ -1,3 +1,5 @@
+@inherits DemoComponent
+
 <div class="container">
     <h1 class="title is-size-1 has-text-centered">Drag Handles</h1>
     <p>Drag handles are specified by the `Handle` property which specifies which CSS class denotes the drag handle. In the example below, the items can only be sorted using the drag handle itself.</p>
@@ -22,6 +24,7 @@
                             </div>
                         </SortableItemTemplate>
                     </SortableList>
+                    <button @onclick="() => DumpList(items)">Dump list</button>
                 </div>
             </div>
         </TabPage>
@@ -47,6 +50,7 @@
                             </div>
                         </SortableItemTemplate>
                     </SortableList>
+                    <button @onclick="() => DumpList(_group.GetModel(ListId)!.Items)">Dump list</button>
                 </div>
             </div>                  
         </TabPage>

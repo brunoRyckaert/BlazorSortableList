@@ -1,5 +1,3 @@
-@using System.Collections.Generic
-@using System.Diagnostics.CodeAnalysis
 @using Microsoft.JSInterop
 
 @inject IJSRuntime JS
@@ -7,20 +5,13 @@
 @typeparam T
 
 <div id="@Id" style ="@Style" @attributes="Attributes">
-    @if (Items != null)
+    @foreach (var item in Items)
     {
-        @foreach (var item in Items)
+        if (SortableItemTemplate is not null)
         {
-            @if (SortableItemTemplate is not null)
-            {
+            <div @key=Guid.NewGuid()>
                 @SortableItemTemplate(item)
-            }
+            </div>
         }
     }
-    else
-    {
-        <div>Error: The list of items is null</div>
-    }
 </div>
-
-
