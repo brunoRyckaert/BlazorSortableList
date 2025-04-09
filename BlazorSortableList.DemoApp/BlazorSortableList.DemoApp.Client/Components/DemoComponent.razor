@@ -1,0 +1,8 @@
+@inject IJSRuntime JS
+
+@code {
+    protected async Task DumpList(IList<Item> list)
+    {
+        await JS.InvokeVoidAsync("alert", string.Join("\n", list.Select(item => item.Name)));
+    }
+}

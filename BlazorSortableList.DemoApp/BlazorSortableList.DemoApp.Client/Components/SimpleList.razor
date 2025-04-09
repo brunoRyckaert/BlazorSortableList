@@ -1,5 +1,6 @@
 @using BlazorSortableList
 
+@inherits DemoComponent
 
 @* remove bootstrap borders *@
 <style>
@@ -28,6 +29,7 @@
                             </div>
                         </SortableItemTemplate>
                     </SortableList>
+                    <button @onclick="() => DumpList(items)">Dump list</button>
                 </div>
             </div>
         </TabPage>
@@ -44,6 +46,7 @@
                             </div>
                         </SortableItemTemplate>
                     </SortableList>
+                    <button @onclick="() => DumpList(items)">Dump list</button>
                 </div>
             </div>
         </TabPage>
@@ -61,6 +64,7 @@
                             </div>
                         </SortableItemTemplate>
                     </SortableList>
+                    <button @onclick="() => DumpList(_group.GetModel(ListId)!.Items)">Dump list</button>
                 </div>
             </div>
         </TabPage>
