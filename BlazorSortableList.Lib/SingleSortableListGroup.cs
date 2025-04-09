@@ -3,11 +3,14 @@
 public class SingleSortableListGroup<T> : SortableListGroup<T>, ISortableListItemMover
 {
     private readonly IList<T> _items;
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global
+    public ISortableListModel<T> Model { get; }
 
     public SingleSortableListGroup(string id, ISortableListModel<T> model)
 
     {
         AddModel(id, model);
+        Model = model;
         
         _items = model.Items;
     }
