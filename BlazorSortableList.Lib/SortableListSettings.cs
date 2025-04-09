@@ -48,7 +48,7 @@ public class SortableListSettings
     /// Gets or sets the CSS class name for the selected element.
     /// </summary>
     /// <value>The CSS for selection.</value>
-    public string CssForSelection { get; set; }
+    public string? CssForSelection { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether multiple selection is allowed.

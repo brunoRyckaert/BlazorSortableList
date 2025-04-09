@@ -7,37 +7,7 @@ export function init(id, group, pull, put, sort, handle, filter, component, forc
     let multiDrag = (typeof cssForSelection !== 'undefined');
 
     let htmlElement = document.getElementById(id);
-
-    //new Sortable(htmlElement,
-    //    {
-    //        multiDrag: true,
-    //        selectedClass: 'selected',
-    //        group: 'shared2alex', // set both lists to same group
-    //        animation: 150,
-    //        onUpdate: (event) => {
-    //            console.log("onUpdate:");
-    //            console.log(event);
-    //        },
-    //        onRemove: (event) => {
-    //            console.log("onRemove:");
-    //            console.log(event);
-    //        },
-    //        onSelect: (event) => {
-    //            console.log("onSelect:");
-    //            console.log(event);
-    //            let children = Array.from(event.from.children);
-    //            let index = children.indexOf(event.item);
-    //            console.log(index);
-    //        },
-    //        onDeselect: (event) => {
-    //            console.log("onDeselect:");
-    //            console.log(event);
-    //            let children = Array.from(event.to.children);
-    //            let index = children.indexOf(event.item);
-    //            console.log(index);
-    //        }
-    //    });
-
+    
     var sortable = new Sortable(htmlElement, {
         animation: 200,
         group: {
@@ -82,18 +52,8 @@ export function init(id, group, pull, put, sort, handle, filter, component, forc
                 oldIndicies.forEach((item) => {
                     event.to.insertBefore(item.multiDragElement, event.to.childNodes[item.index]);
                 });
-            } else {
-                if (DEBUG_MODE) {
-                    //console.log("remove item for update:");
-                    //console.log(event.item);
-                    //console.log("insert it before:", event.to, event.oldIndex, event.to.childNodes, event.to.childNodes[event.oldIndex]);
-                }
-                //event.item.remove();
-
-                // method inserts a child node before an existing child. insertBefore(newNode, referenceNode)
-                // referenceNode - The node before which newNode is inserted
-                //event.to.insertBefore(event.item, event.to.childNodes[event.oldIndex]);
             }
+            
             // Notify .NET to update its model and re-render
             component.invokeMethodAsync('OnUpdateJS', oldIndex, newIndex, event.from.id);
         },

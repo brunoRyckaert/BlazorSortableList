@@ -1,24 +1,15 @@
 ﻿namespace BlazorSortableList;
 
-public class SortableListModel<T>: ISortableListModel<T>
+public class SortableListModel<T> : ISortableListModel<T>
 {
-    protected IList<T> _items;
-
     public SortableListModel(IList<T> items)
     {
-        _items = items;
+        Items = items;
     }
 
     public string Group { get; set; } = Guid.NewGuid().ToString();
 
-    public SortableListSettings Settings { get; set; } = new SortableListSettings();
+    public SortableListSettings Settings { get; set; } = new();
 
-    public IList<T> Items
-    {
-        get
-        {
-            return _items;
-        }
-    }
-    
+    public IList<T> Items { get; }
 }
